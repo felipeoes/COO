@@ -51,7 +51,8 @@ public class Ball {
 	*/
 
 	public void update(long delta){
-
+		this.cx += delta;
+		this.cy += delta;
 	}
 
 	/**
@@ -71,7 +72,25 @@ public class Ball {
 	*/
 
 	public void onWallCollision(String wallId){
+		if(wallId == Pong.TOP) { // verifica se bateu nas paredes superior ou inferior e continua o jogo
+			this.cx += 2;
+			this.cy += 2;
+		}
 
+		if(wallId == Pong.BOTTOM) {
+			this.cx -= 2;
+			this.cy -= 2;
+		}
+
+		if(wallId == Pong.RIGHT) { // jogador1 pontua
+			this.cx = 400; // retorna a bola para a posicao inicial
+			this.cy = 300;
+		}
+		
+		else { // jogador2 pontua
+			this.cx = 400; // retorna a bola para a posicao inicial
+			this.cy = 300;
+		}
 	}
 
 	/**
@@ -82,8 +101,7 @@ public class Ball {
 	*/
 	
 	public boolean checkCollision(Wall wall){
-		if(this.cy == wall.getHeight()) return true;
-
+		if(this.cx == wall.getCx() && this.cy == wall.getCy()) return true;
 		return false;
 	}
 
