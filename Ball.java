@@ -51,8 +51,8 @@ public class Ball {
 	*/
 
 	public void update(long delta){
-		this.cx += delta;
-		this.cy += delta;
+		this.cx += 1 - delta;
+		this.cy += 1 - delta;
 	}
 
 	/**
