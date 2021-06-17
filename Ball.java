@@ -113,8 +113,29 @@ public class Ball {
 	*/	
 
 	public boolean checkCollision(Player player){
+		// Pegando hitbox do player.
+		double pTop = player.getCy() - (player.getHeight() / 2);
+		double pBottom = player.getCy() + (player.getHeight() / 2);
+		double pLeft = player.getCx() - (player.getWidth() / 2);
+		double pRight = player.getCx() + (player.getWidth() / 2);
+		
+		// Pegando hitbox da bola.
+		double bTop = this.cy - (this.height/2);
+		double bBottom = this.cy + (this.height / 2);
+		double bLeft = this.cx - (this.width / 2);
+		double bRight = this.cx + (this.width / 2);
+		
+		// Checando as colisões.
+		boolean leftCol = pLeft <= bRight;
+		boolean rightCol = pRight >= bLeft;
+		// Checando colisões com as bordas inferiores e superiores.
+		boolean bpTop = bBottom >= pTop;
+		boolean bpBottom = bTop <= pBottom;
+		
+		// Caso haja uma colisão.
+		boolean check = leftCol && rightCol && bpTop && bpBottom
 
-		return false;
+		return check;
 	}
 
 	/**
