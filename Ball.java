@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.*;
 
 /**
 	Esta classe representa a bola usada no jogo. A classe princial do jogo (Pong)
@@ -18,11 +19,13 @@ public class Ball {
 		@param height altura do retangulo que representa a bola.
 		@param color cor da bola.
 		@param speed velocidade da bola (em pixels por millisegundo).
+
 	*/
 
-	double cx, cy, width, height, speed;
+	double cx, cy, width, height, speed, directX, directY;
 	Color color;
 
+	Random rand = new Random();
 
 	public Ball(double cx, double cy, double width, double height, Color color, double speed){
 		this.cx = cx;
@@ -31,15 +34,15 @@ public class Ball {
 		this.height = height;
 		this.speed = speed;
 		this.color = color;
+		this.directX = rand.nextInt(2) == 1 ? Math.abs(this.speed) : -Math.abs(this.speed);
+		this.directY = rand.nextInt(2) == 1 ? Math.abs(this.speed) : -Math.abs(this.speed);
 	}
-
 
 	/**
 		Método chamado sempre que a bola precisa ser (re)desenhada.
 	*/
 
 	public void draw(){
-
 		GameLib.setColor(color);
 		GameLib.fillRect(cx, cy, height, width);
 	}
@@ -51,8 +54,8 @@ public class Ball {
 	*/
 
 	public void update(long delta){
-		this.cx += 1 - delta;
-		this.cy += 1 - delta;
+		this.cx += (delta * this.directX);
+		this.cy += (delta * this.directY);
 	}
 
 	/**
@@ -62,6 +65,9 @@ public class Ball {
 	*/
 
 	public void onPlayerCollision(String playerId){
+		// if(playerId == Pong.PLAYER1) {
+
+		// }
 
 	}
 
@@ -73,23 +79,17 @@ public class Ball {
 
 	public void onWallCollision(String wallId){
 		if(wallId == Pong.TOP) { // verifica se bateu nas paredes superior ou inferior e continua o jogo
-			this.cx += 2;
-			this.cy += 2;
+			this.directY = Math.abs(this.directY);
 		}
-
 		if(wallId == Pong.BOTTOM) {
-			this.cx -= 2;
-			this.cy -= 2;
+			this.directY = -Math.abs(this.directY);
 		}
-
-		if(wallId == Pong.RIGHT) { // jogador1 pontua
-			this.cx = 400; // retorna a bola para a posicao inicial
-			this.cy = 300;
+		if(wallId == Pong.RIGHT) {
+			this.directX = Math.abs(this.directX);
 		}
 		
-		else { // jogador2 pontua
-			this.cx = 400; // retorna a bola para a posicao inicial
-			this.cy = 300;
+		if(wallId == Pong.LEFT) {
+			this.directX = -Math.abs(this.directX);
 		}
 	}
 
@@ -101,7 +101,44 @@ public class Ball {
 	*/
 	
 	public boolean checkCollision(Wall wall){
-		if(this.cx == wall.getCx() && this.cy == wall.getCy()) return true;
+		// if(this.cx == wall.getCx() && this.cy == wall.getCy()) return true;
+		if (wall.getId() == Pong.TOP) {
+			// Pegando o y de colisão da parede.
+			double wBottom = (wall.getHeight()/2) + wall.getCy();
+			// Pegando o y de colisão da bola.
+			double bTop = this.cy - (this.height/2);
+			if (wBottom >= bTop) {
+				return true;
+			}
+		}
+		else if (wall.getId() == Pong.BOTTOM) {
+			// Pegando o y de colisão da parede.
+			double wTop = -(wall.getHeight()/2) + wall.getCy();
+			// Pegando o y de colisão da bola.
+			double bBottom = this.cy + (this.height/2);
+			if (wTop <= bBottom) {
+				return true;
+			}
+		}
+		else if (wall.getId() == Pong.RIGHT) {
+			// Pegando o x de colisão da parede.
+			double wLeft = -(wall.getWidth()/2) + wall.getCx();
+			// Pegando o x de colisão da bola.
+			double bRight = this.cx + (this.width/2);
+
+			if (bRight <= 0) {
+				return true;
+			}
+		}
+		else if (wall.getId() == Pong.LEFT){
+			// Pegando o x de colisão da parede.
+			double wRight = (wall.getWidth()/2) + wall.getCx();
+			// Pegando o x de colisão da bola.
+			double bLeft = this.cx - (this.width/2);
+			if (bLeft >= wall.getCy() * 2 + (5* wall.getCx()) ) {
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -133,7 +170,7 @@ public class Ball {
 		boolean bpBottom = bTop <= pBottom;
 		
 		// Caso haja uma colisão.
-		boolean check = leftCol && rightCol && bpTop && bpBottom
+		boolean check = leftCol && rightCol && bpTop && bpBottom;
 
 		return check;
 	}

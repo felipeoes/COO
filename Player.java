@@ -61,11 +61,14 @@ public class Player {
 	 */
 
 	public void moveUp(long delta) {
-		System.out.println(cy);
-		if (this.v_limit[0] < cy - (10 * delta)) {
-			GameLib.setColor(color);
-			this.cy -= delta;
-			GameLib.fillRect(cx, cy, width, height);
+		double d = delta * this.speed;
+		double pos = this.cy - (this.height / 2);
+		if (this.v_limit[0] < pos - d) {
+			this.cy -= d;
+		}
+
+		else {
+			this.cy = (this.height / 2) + this.v_limit[0];
 		}
 	}
 
@@ -79,10 +82,15 @@ public class Player {
 	 */
 
 	public void moveDown(long delta) {
-		if (this.v_limit[1] > cy + (10 * delta)) {
-			GameLib.setColor(color);
-			this.cy += delta;
-			GameLib.fillRect(cx, cy, width, height);
+		double d = delta * this.speed;
+		double pos = this.cy + (this.height / 2);
+
+		if (this.v_limit[1] > pos + d) {
+			this.cy += d;
+		}
+
+		else {
+			this.cy = this.v_limit[1] - (this.height / 2);
 		}
 	}
 
