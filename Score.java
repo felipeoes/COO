@@ -26,8 +26,18 @@ public class Score {
 	*/
 
 	public void draw(){
-		GameLib.drawText(playerId, 70, GameLib.ALIGN_LEFT);
-		GameLib.drawText(Integer.toString(points), 90, GameLib.ALIGN_LEFT);	
+
+		if(playerId == Pong.PLAYER1) {
+			Color color = new Color(0, 255, 0);
+			GameLib.setColor(color);
+			GameLib.drawText(playerId + ": " + Integer.toString(points), 70, GameLib.ALIGN_LEFT);
+		}
+		
+		if(playerId == Pong.PLAYER2) {
+			Color color = new Color(0, 0, 255);
+			GameLib.setColor(color);
+			GameLib.drawText(playerId + ": " + Integer.toString(points), 70, GameLib.ALIGN_RIGHT);
+		}
 	}
 
 	/**

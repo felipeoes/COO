@@ -150,4 +150,13 @@ public class Player {
 
 		return this.cy;
 	}
+
+	/**
+	 * Método que devolve a cor do player.
+	 * 
+	 * @return o valor Color da cor color.
+	 */
+	public Color getColor() {
+		return this.color;
+	}
 }
