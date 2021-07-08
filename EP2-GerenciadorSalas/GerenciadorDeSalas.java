@@ -3,6 +3,19 @@ import java.util.*;
 
 public class GerenciadorDeSalas {
 
+    class FalhaNaReservaException extends Exception {
+
+        private Reserva reserva;
+
+        public FalhaNaReservaException(Reserva reserva) {
+            this.reserva = reserva;
+        }
+
+        public String getMessage() {
+            return ("\t\t\tDados da reserva \n\n \tINICIO \t\tFIM \t\tSALA \n \t" + reserva.getInicio() + "\t"
+                    + reserva.getFim() + "\t" + reserva.getSala());
+        }
+    }
 
     public void adicionaSalaChamada(String nome, int capacidadeMaxima, String descricao) {
 
@@ -13,7 +26,7 @@ public class GerenciadorDeSalas {
     }
 
     public List<Sala> listaDeSalas() {
-        
+
         return null;
     }
 
@@ -22,7 +35,7 @@ public class GerenciadorDeSalas {
     }
 
     public Reserva reservaSalaChamada(String nomeDaSala, LocalDateTime dataInicial, LocalDateTime dataFinal) {
-        
+
         return null;
     }
 
@@ -31,11 +44,11 @@ public class GerenciadorDeSalas {
     }
 
     public Collection<Reserva> reservasParaSala(String nomeSala) {
-        
+
         return null;
     }
 
     public void imprimeReservasDaSala(String nomeSala) {
-        
+
     }
 }
