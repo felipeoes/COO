@@ -34,7 +34,7 @@ public class GerenciadorDeSalas {
 
     }
 
-    public Reserva reservaSalaChamada(String nomeDaSala, LocalDateTime dataInicial, LocalDateTime dataFinal) {
+    public Reserva reservaSalaChamada(String nomeDaSala, LocalDateTime dataInicial, LocalDateTime dataFinal) throws FalhaNaReservaException {
 
         return null;
     }
