@@ -5,6 +5,13 @@ public class Sala {
     private String observacoes;
     private int capacidade;
 
+    public Sala(String nome, String local, String observacoes, int capacidade) {
+        this.nome = nome;
+        this.local = local;
+        this.observacoes = observacoes;
+        this.capacidade = capacidade;
+    }
+
     public String getNome() {
         return nome;
     }

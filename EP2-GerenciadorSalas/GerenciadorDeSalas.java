@@ -2,6 +2,9 @@ import java.time.*;
 import java.util.*;
 
 public class GerenciadorDeSalas {
+    private List<Sala> listaSalas;
+    private HashMap<String, HashSet<Reserva>> relReservas;
+    private HashSet<Reserva> listaReservas; // lista de reservas de um determinada sala
 
     class FalhaNaReservaException extends Exception {
 
@@ -26,15 +29,15 @@ public class GerenciadorDeSalas {
     }
 
     public List<Sala> listaDeSalas() {
-
-        return null;
+        return this.listaSalas;
     }
 
     public void adicionaSala(Sala novaSala) {
-
+        this.listaSalas.add(novaSala);
     }
 
-    public Reserva reservaSalaChamada(String nomeDaSala, LocalDateTime dataInicial, LocalDateTime dataFinal) throws FalhaNaReservaException {
+    public Reserva reservaSalaChamada(String nomeDaSala, LocalDateTime dataInicial, LocalDateTime dataFinal)
+            throws FalhaNaReservaException {
 
         return null;
     }
@@ -45,7 +48,7 @@ public class GerenciadorDeSalas {
 
     public Collection<Reserva> reservasParaSala(String nomeSala) {
 
-        return null;
+        return relReservas.get(nomeSala);
     }
 
     public void imprimeReservasDaSala(String nomeSala) {

@@ -31,6 +31,8 @@ public class MarcadorDeReuniao {
 
     public void marcarReuniaoEntre(LocalDate dataInicial, LocalDate dataFinal,
             Collection<String> listaDeParticipantes) {
+                // Reserva res = new Reserva(sala, inicio, fim);
+                
 
     }
 
