@@ -3,7 +3,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class MarcadorDeReuniao {
-    private HashSet<String> participantes;
+    private Collection<String> participantes;
+    private LocalDate[] periodo;// periodo em que a reuniao pode ocorrer, determinado pelo responsavel da
+                                // reuniao.
     private HashMap<String, List<HashMap<LocalDateTime, LocalDateTime>>> relDisponilidade; // relacao participante vs
                                                                                            // data de
     // disponilidade
@@ -16,7 +18,7 @@ public class MarcadorDeReuniao {
                                                 // reuniao
 
     public MarcadorDeReuniao() {
-        this.participantes = new HashSet<>();
+        this.participantes = new HashSet<String>();
         this.relDisponilidade = new HashMap<>();
         this.horariosIni = new HashSet<>();
         this.horariosFim = new HashSet<>();
@@ -36,19 +38,29 @@ public class MarcadorDeReuniao {
 
     public void marcarReuniaoEntre(LocalDate dataInicial, LocalDate dataFinal,
             Collection<String> listaDeParticipantes) {
-        // Reserva res = new Reserva(sala, inicio, fim);
 
+        this.participantes = listaDeParticipantes;
+        this.periodo = new LocalDate[] { dataInicial, dataFinal };
     }
 
     public void indicaDisponibilidadeDe(String participante, LocalDateTime inicio, LocalDateTime fim) {
         HashMap<LocalDateTime, LocalDateTime> datas = new HashMap<>();
+        LocalDateTime periodoInicial = periodo[0].atTime(0, 0);
+        LocalDateTime periodoFinal = periodo[1].atTime(0, 0);
 
-        datas.put(inicio, fim);
-        relDatas.add(datas);
-        relDisponilidade.put(participante, relDatas);
-        participantes.add(participante);
-        horariosIni.add(inicio);
-        horariosFim.add(fim);
+        if ((inicio.isAfter(periodoInicial) || inicio.isEqual(periodoInicial))
+                && (fim.isBefore(periodoFinal) || fim.isEqual(periodoFinal))) {
+            datas.put(inicio, fim);
+            relDatas.add(datas);
+            relDisponilidade.put(participante, relDatas);
+            horariosIni.add(inicio);
+            horariosFim.add(fim);
+        }
+
+        else {
+            System.out.println(
+                    "Indique um horário de disponibilidade dentro do período estipulado pelo responsável da reunião");
+        }
     }
 
     public void verificaSobreposicao() {
@@ -63,29 +75,8 @@ public class MarcadorDeReuniao {
         String listaHorariosFim = "";
 
         while (itIni.hasNext()) {
-            LocalDateTime atual = itIni.next();
-
-            while (it.hasNext()) {
-                String participante = it.next();
-
-                List<HashMap<LocalDateTime, LocalDateTime>> temp = relDisponilidade.get(participante);
-
-                for (HashMap<LocalDateTime, LocalDateTime> horario : temp) {
-                    LocalDateTime inicio = (LocalDateTime) horario.keySet().toArray()[0];
-
-                    if (!inicio.equals(atual))
-                        matchHorarioIni = false;
-
-                    listaHorariosIni += atual.format(formatador) + "\n";
-                }
-
-            }
-
-        }
-
-        it = participantes.iterator();
-        while (itFim.hasNext()) {
-            LocalDateTime atual = itFim.next();
+            LocalDateTime horarioInicial = itIni.next();
+            LocalDateTime horarioFinal = itFim.next();
 
             while (it.hasNext()) {
                 String participante = it.next();
@@ -96,19 +87,29 @@ public class MarcadorDeReuniao {
                     LocalDateTime inicio = (LocalDateTime) horario.keySet().toArray()[0];
                     LocalDateTime fim = horario.get(inicio);
 
-                    if (!fim.equals(atual))
-                        matchHorarioFim = false;
+                    if (!(horarioInicial.isAfter(inicio) || horarioInicial.isEqual(inicio))) {
+                        horariosIni.remove(horarioInicial);
+                    }
 
-                    listaHorariosFim += atual.format(formatador) + "\n";
+                    if (!(horarioFinal.isBefore(fim) || horarioFinal.isEqual(fim))) {
+                        horariosFim.remove(horarioFinal);
+                    }
+
                 }
+
             }
 
         }
 
-        System.out.println(matchHorarioIni ? "Horários iniciais disponíveis: " + listaHorariosIni
-                : "Nenhum horário inicial satisfaz a disponibilidade de todos os participantes");
-        System.out.println(matchHorarioFim ? "Horários finais disponíveis: " + listaHorariosFim
-                : "Nenhum horário final satisfaz a disponibilidade de todos os participantes");
+        System.out.println("Horários iniciais disponíveis: ");
+        for (LocalDateTime ini : horariosIni) {
+            System.out.println(ini.format(formatador));
+        }
+
+        System.out.println("Horários finais disponíveis: ");
+        for (LocalDateTime fim : horariosIni) {
+            System.out.println(fim.format(formatador));
+        }
 
     }
 

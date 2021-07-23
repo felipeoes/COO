@@ -12,10 +12,11 @@ public class Tester {
         String p2 = "marcelina@usp.br";
         String p3 = "martha@usp.br";
 
-        participantes.add(responsavel);
-        for (int i = 1; i <= 3; i++) {
-            participantes.add("p" + i);
-        }
+        participantes.add(p1);
+        participantes.add(p2);
+        participantes.add(p3);
+        // participantes.add(responsavel); verificar se é necessário adicionar
+        // responsável na lista de participantes dps
 
         MarcadorDeReuniao marc = new MarcadorDeReuniao();
         GerenciadorDeSalas ger = new GerenciadorDeSalas();
