@@ -12,10 +12,16 @@ public class Sala {
         this.capacidade = capacidade;
     }
 
+    public Sala(String nome, int capacidadeMaxima, String descricao) {
+        this.nome = nome;
+        this.observacoes = descricao;
+        this.capacidade = capacidadeMaxima;
+    }
+
     public String getNome() {
         return nome;
     }
-
+    
     public void setNome(String nome) {
         this.nome = nome;
     }

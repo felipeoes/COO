@@ -21,11 +21,16 @@ public class GerenciadorDeSalas {
     }
 
     public void adicionaSalaChamada(String nome, int capacidadeMaxima, String descricao) {
-
+        Sala sala = new Sala(nome, capacidadeMaxima, descricao);
+        adicionaSala(sala);
     }
 
     public void removeSalaChamada(String nomeDaSala) {
-
+        if (nomeDaSala.length() > 0) {
+            Sala sala = buscaSala(nomeDaSala);
+            if (sala != null)
+                listaSalas.remove(sala);
+        }
     }
 
     public List<Sala> listaDeSalas() {
@@ -38,6 +43,13 @@ public class GerenciadorDeSalas {
 
     public Reserva reservaSalaChamada(String nomeDaSala, LocalDateTime dataInicial, LocalDateTime dataFinal)
             throws FalhaNaReservaException {
+        if (nomeDaSala.length() > 0) {
+            Sala sala = buscaSala(nomeDaSala);
+            if (sala != null) {
+                Reserva res = new Reserva(sala, dataInicial, dataFinal);
+                listaReservas.add(res);
+            }
+        }
 
         return null;
     }
@@ -53,5 +65,15 @@ public class GerenciadorDeSalas {
 
     public void imprimeReservasDaSala(String nomeSala) {
 
+    }
+
+    public Sala buscaSala(String nomeSala) {
+        for (Sala sala : listaSalas) {
+            if (sala.getNome().equals(nomeSala)) {
+                return sala;
+            }
+        }
+
+        return null;
     }
 }

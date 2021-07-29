@@ -68,12 +68,7 @@ public class MarcadorDeReuniao {
         Iterator<String> it = participantes.iterator();
         Iterator<LocalDateTime> itIni = horariosIni.iterator();
         Iterator<LocalDateTime> itFim = horariosFim.iterator();
-        boolean matchHorarioIni = true;
-        boolean matchHorarioFim = true;
-
-        String listaHorariosIni = "";
-        String listaHorariosFim = "";
-
+        
         while (itIni.hasNext()) {
             LocalDateTime horarioInicial = itIni.next();
             LocalDateTime horarioFinal = itFim.next();
@@ -94,9 +89,7 @@ public class MarcadorDeReuniao {
                     if (!(horarioFinal.isBefore(fim) || horarioFinal.isEqual(fim))) {
                         horariosFim.remove(horarioFinal);
                     }
-
                 }
-
             }
 
         }
