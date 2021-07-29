@@ -64,12 +64,12 @@ public class MarcadorDeReuniao {
     }
 
     public void verificaSobreposicao() {
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y hh:mm:ss");
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y HH:mm:ss");
         Iterator<String> it = participantes.iterator();
-        Iterator<LocalDateTime> itIni = horariosIni.iterator();
+        // Iterator<LocalDateTime> itIni = horariosIni.iterator();
         Iterator<LocalDateTime> itFim = horariosFim.iterator();
-        
-        while (itIni.hasNext()) {
+
+        for (Iterator<LocalDateTime> itIni = horariosIni.iterator(); it.hasNext();) {
             LocalDateTime horarioInicial = itIni.next();
             LocalDateTime horarioFinal = itFim.next();
 
@@ -91,7 +91,6 @@ public class MarcadorDeReuniao {
                     }
                 }
             }
-
         }
 
         System.out.println("Horários iniciais disponíveis: ");
@@ -100,7 +99,7 @@ public class MarcadorDeReuniao {
         }
 
         System.out.println("Horários finais disponíveis: ");
-        for (LocalDateTime fim : horariosIni) {
+        for (LocalDateTime fim : horariosFim) {
             System.out.println(fim.format(formatador));
         }
 
@@ -108,7 +107,7 @@ public class MarcadorDeReuniao {
 
     public void mostraSobreposicao() {
         Iterator<String> it = participantes.iterator();
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y hh:mm:ss");
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y HH:mm:ss");
         int cont = 0;
 
         System.out.println("PARTICIPANTE  \t\t\tINICIO      \t\tFIM");
@@ -121,13 +120,14 @@ public class MarcadorDeReuniao {
 
                 if (cont == 0) {
                     System.out.println(
-                            participante + "  \t\t" + inicio.format(formatador) + "  \t" + fim.format(formatador));
+                            participante + "   " + inicio.format(formatador) + "  \t" + fim.format(formatador));
                 } else {
                     System.out.println(
                             participante + "  \t" + inicio.format(formatador) + "  \t" + fim.format(formatador));
                 }
+                cont++;
             }
-            cont++;
+
         }
 
         verificaSobreposicao();
