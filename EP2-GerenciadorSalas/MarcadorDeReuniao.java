@@ -1,6 +1,10 @@
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class MarcadorDeReuniao {
     private Collection<String> participantes;
@@ -10,25 +14,28 @@ public class MarcadorDeReuniao {
                                                                                            // data de
     // disponilidade
     List<HashMap<LocalDateTime, LocalDateTime>> relDatas;
-    private HashSet<LocalDateTime> horariosIni; // set com os horários iniciais em que cada participante pode participar
-                                                // da
-                                                // reuniao
-    private HashSet<LocalDateTime> horariosFim; // set com os horários finais em que cada participante pode participar
-                                                // da
-                                                // reuniao
+    private ArrayList<LocalDateTime> horariosIni; // set com os horários iniciais em que cada participante pode
+                                                  // participar
+                                                  // da
+                                                  // reuniao
+    private ArrayList<LocalDateTime> horariosFim; // set com os horários finais em que cada participante pode participar
+                                                  // da
+                                                  // reuniao
+
+    private DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y HH:mm");
 
     public MarcadorDeReuniao() {
         this.participantes = new HashSet<String>();
         this.relDisponilidade = new HashMap<>();
-        this.horariosIni = new HashSet<>();
-        this.horariosFim = new HashSet<>();
+        this.horariosIni = new ArrayList<>();
+        this.horariosFim = new ArrayList<>();
         this.relDatas = new ArrayList<HashMap<LocalDateTime, LocalDateTime>>();
     }
 
     public MarcadorDeReuniao(HashSet<String> participantes,
             HashMap<String, List<HashMap<LocalDateTime, LocalDateTime>>> relDisponilidade,
-            List<HashMap<LocalDateTime, LocalDateTime>> relDatas, HashSet<LocalDateTime> horariosIni,
-            HashSet<LocalDateTime> horariosFim) {
+            List<HashMap<LocalDateTime, LocalDateTime>> relDatas, ArrayList<LocalDateTime> horariosIni,
+            ArrayList<LocalDateTime> horariosFim) {
         this.participantes = participantes;
         this.relDisponilidade = relDisponilidade;
         this.relDatas = relDatas;
@@ -59,21 +66,44 @@ public class MarcadorDeReuniao {
 
         else {
             System.out.println(
-                    "Indique um horário de disponibilidade dentro do período estipulado pelo responsável da reunião");
+                    "Horário não foi incluído na lista de disponibilidade pois não respeita o período estipulado pelo responsável da reunião.\nData inicial:"
+                            + periodoInicial.format(formatador) + periodoFinal.format(formatador));
         }
     }
 
-    public void verificaSobreposicao() {
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y HH:mm:ss");
+    public Map<Object, List<LocalDateTime>> agrupaHorarios(Collection<LocalDateTime> listaHorarios) {
+        TemporalField groupField = ChronoField.DAY_OF_YEAR;
+
+        Map<Object, List<LocalDateTime>> result = listaHorarios.stream()
+                .collect(Collectors.groupingBy(d -> d.get(groupField)));
+
+        return result;
+    }
+
+    public boolean calculaSobreposicao() {
         Iterator<String> it = participantes.iterator();
-        // Iterator<LocalDateTime> itIni = horariosIni.iterator();
-        Iterator<LocalDateTime> itFim = horariosFim.iterator();
+        Map<Object, List<LocalDateTime>> iniAgrupado = agrupaHorarios(horariosIni);
+        Map<Object, List<LocalDateTime>> fimAgrupado = agrupaHorarios(horariosFim);
+        Iterator<Entry<Object, List<LocalDateTime>>> horariosFim = fimAgrupado.entrySet().iterator();
+        boolean matchHorario;
+        boolean existeHorario = false;
 
-        for (Iterator<LocalDateTime> itIni = horariosIni.iterator(); it.hasNext();) {
-            LocalDateTime horarioInicial = itIni.next();
-            LocalDateTime horarioFinal = itFim.next();
+        for (Entry<Object, List<LocalDateTime>> horarios : iniAgrupado.entrySet()) {
+            List<LocalDateTime> listaIni = horarios.getValue();
+            if (listaIni.size() < participantes.size()) { // caso em que nem todos participantes escolheram aquele
+                                                          // horário, então já não é match
+                horariosFim.next();
+                continue;
+            }
 
-            while (it.hasNext()) {
+            List<LocalDateTime> listaFim = horariosFim.next().getValue();
+            LocalDateTime hIni = listaIni.stream().max(LocalDateTime::compareTo).get();
+            LocalDateTime hFim = listaFim.stream().min(LocalDateTime::compareTo).get();
+
+            matchHorario = true;
+
+            it = participantes.iterator();
+            while (it.hasNext() && matchHorario) {
                 String participante = it.next();
 
                 List<HashMap<LocalDateTime, LocalDateTime>> temp = relDisponilidade.get(participante);
@@ -81,36 +111,33 @@ public class MarcadorDeReuniao {
                 for (HashMap<LocalDateTime, LocalDateTime> horario : temp) {
                     LocalDateTime inicio = (LocalDateTime) horario.keySet().toArray()[0];
                     LocalDateTime fim = horario.get(inicio);
+                    int diaIni = inicio.getDayOfMonth();
 
-                    if (!(horarioInicial.isAfter(inicio) || horarioInicial.isEqual(inicio))) {
-                        horariosIni.remove(horarioInicial);
-                    }
-
-                    if (!(horarioFinal.isBefore(fim) || horarioFinal.isEqual(fim))) {
-                        horariosFim.remove(horarioFinal);
+                    if (diaIni == hIni.getDayOfMonth()
+                            && (inicio.isBefore(hIni) || fim.isBefore(hFim) || inicio.isEqual(hFim))) {
+                        matchHorario = false;
+                        break;
                     }
                 }
             }
-        }
 
-        System.out.println("Horários iniciais disponíveis: ");
-        for (LocalDateTime ini : horariosIni) {
-            System.out.println(ini.format(formatador));
-        }
+            if (matchHorario) {
+                String fimFormatado = hFim.format(formatador).substring(11);
+                System.out.println("\nA reunião pode ser marcada no seguinte período: " + hIni.format(formatador) + "-"
+                        + fimFormatado);
 
-        System.out.println("Horários finais disponíveis: ");
-        for (LocalDateTime fim : horariosFim) {
-            System.out.println(fim.format(formatador));
-        }
+                existeHorario = true;
+            }
 
+        }
+        return existeHorario;
     }
 
     public void mostraSobreposicao() {
         Iterator<String> it = participantes.iterator();
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y HH:mm:ss");
         int cont = 0;
 
-        System.out.println("PARTICIPANTE  \t\t\tINICIO      \t\tFIM");
+        System.out.println("PARTICIPANTE  \t\t\tINICIO     \t\tFIM");
         while (it.hasNext()) {
             String participante = it.next();
             List<HashMap<LocalDateTime, LocalDateTime>> temp = relDisponilidade.get(participante);
@@ -120,16 +147,16 @@ public class MarcadorDeReuniao {
 
                 if (cont == 0) {
                     System.out.println(
-                            participante + "   " + inicio.format(formatador) + "  \t" + fim.format(formatador));
+                            participante + "   \t" + inicio.format(formatador) + "  \t\t" + fim.format(formatador));
                 } else {
                     System.out.println(
-                            participante + "  \t" + inicio.format(formatador) + "  \t" + fim.format(formatador));
+                            participante + "  \t\t" + inicio.format(formatador) + "  \t\t" + fim.format(formatador));
                 }
-                cont++;
             }
-
+            cont++;
         }
 
-        verificaSobreposicao();
+        if (!calculaSobreposicao())
+            System.out.println("\nNão há horários que satisfaçam todos os participantes");
     }
 }

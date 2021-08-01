@@ -11,6 +11,9 @@ public class Reserva {
         this.fim = fim;
     }
 
+    public Reserva() {
+    }
+
     public Sala getSala() {
         return sala;
     }
@@ -33,6 +36,11 @@ public class Reserva {
 
     public void setFim(LocalDateTime fim) {
         this.fim = fim;
+    }
+
+    @Override
+    public String toString() {
+        return this.sala.getNome() + " \t" + this.getInicio() + "\t" + this.getFim();
     }
 
 }
