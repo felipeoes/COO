@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Reserva {
     private Sala sala;
@@ -40,7 +41,10 @@ public class Reserva {
 
     @Override
     public String toString() {
-        return this.sala.getNome() + " \t" + this.getInicio() + "\t" + this.getFim();
+        final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y HH:mm");
+
+        return "NOME DA SALA: " + this.sala.getNome() + " \tINICIO: " + this.getInicio().format(formatador) + "\tFIM: "
+                + this.getFim().format(formatador);
     }
 
 }

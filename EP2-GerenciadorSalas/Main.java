@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.*;
-import java.util.Map.Entry;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,7 +17,7 @@ public class Main {
 
     public static boolean validaNumero(String num) { // método que usa regex para validar entrada de números
         // final Pattern padraoNum = Pattern.compile("[1-7]+");
-        final Pattern padraoNum = Pattern.compile("\\b[1-7]+\\b");
+        final Pattern padraoNum = Pattern.compile("\\b[1-7]\\b");
         Matcher matcher = padraoNum.matcher(num);
         return matcher.matches();
     }
@@ -44,7 +43,7 @@ public class Main {
     }
 
     public static void marcadorDeReuniao() throws IOException {
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y");
+        final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y");
         List<String> participantes = new ArrayList<String>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         LocalDate dataInicial;
@@ -92,8 +91,6 @@ public class Main {
         marc.marcarReuniaoEntre(dataInicial, dataFinal, participantes);
         HashMap<LocalDateTime, LocalDateTime> relHorarios = new HashMap<>();
         HashMap<String, HashMap<LocalDateTime, LocalDateTime>> relDisponibilidade = new HashMap<>();
-        LocalDateTime dataInicio = dataInicial.atTime(0, 0);
-        LocalDateTime dataFim = dataFinal.atTime(0, 0);
 
         for (String participante : participantes) {
             System.out.println(participante
@@ -124,17 +121,9 @@ public class Main {
                     LocalDateTime fim = LocalDateTime.of(ano, mes, dia, Integer.parseInt(hFim[0]),
                             Integer.parseInt(hFim[1]));
 
-                    if ((inicio.isAfter(dataInicio)
-                            || inicio.isEqual(dataInicio) && (fim.isBefore(dataFim) || fim.isEqual(dataFim)))) {
-                        relHorarios.put(inicio, fim);
-                        System.out.println(
-                                "Caso deseje adicionar adicionar mais algum horário de disponibilidade, basta digitá-lo. Caso tenha finalizado, digite \"X\" e aperte Enter");
-                    } else {
-                        System.out.println(
-                                "Horário não foi incluído na lista de disponibilidade. Digite um horário que respeite o período estipulado pelo responsável da reunião.\nData inicial: "
-                                        + dataInicio.format(formatador) + "\nData final: "
-                                        + dataFim.format(formatador));
-                    }
+                    marc.indicaDisponibilidadeDe(participante, inicio, fim);
+                    System.out.println(
+                            "Caso deseje adicionar adicionar mais algum horário de disponibilidade, basta digitá-lo. Caso tenha finalizado, digite \"X\" e aperte Enter");
 
                     input = reader.readLine().split(" ");
                 } catch (Exception e) {
@@ -145,14 +134,6 @@ public class Main {
 
             relDisponibilidade.put(participante, relHorarios);
             relHorarios = new HashMap<>();
-        }
-
-        for (Entry<String, HashMap<LocalDateTime, LocalDateTime>> participante : relDisponibilidade.entrySet()) {
-            HashMap<LocalDateTime, LocalDateTime> horarios = participante.getValue();
-
-            for (Entry<LocalDateTime, LocalDateTime> horario : horarios.entrySet()) {
-                marc.indicaDisponibilidadeDe(participante.getKey(), horario.getKey(), horario.getValue());
-            }
             marc.relDatas = new ArrayList<HashMap<LocalDateTime, LocalDateTime>>();
         }
         marc.mostraSobreposicao();
@@ -201,7 +182,7 @@ public class Main {
                         }
                     }
                 }
-                break;
+                    break;
 
                 case "2": {
                     System.out.println("Digite o nome da sala a ser removida");
@@ -209,53 +190,71 @@ public class Main {
 
                     ger.removeSalaChamada(nomeSala);
                 }
-                break;
+                    break;
 
                 case "3": {
                     List<Sala> listaSalas = ger.listaDeSalas();
-                    if(listaSalas.isEmpty()) System.out.println("Não há nenhuma sala neste gerenciador de salas");
-                    
+                    if (listaSalas.isEmpty())
+                        System.out.println("Não há nenhuma sala neste gerenciador de salas");
+
                     for (Sala sala : ger.listaDeSalas()) {
                         System.out.println(sala.toString());
                     }
                 }
-                break;
+                    break;
 
                 case "4": {
                     System.out.println(
                             "Digite o nome da sala seguido do horário inicial e final da reserva, sendo que a sala é separada dos horários por uma vírgula e o horário inicial deve ser separado do final por um hífen (-). Exemplo: sala de jogos,27/08/2021 14:25-18:00");
                     String[] inputH = reader.readLine().split(",");
-                    String[] datas = inputH[1].split(" ");
-                    LocalDateTime[] horarios = montaObjetoData(datas);
+                    try {
+                        String[] datas = inputH[1].split(" ");
+                        LocalDateTime[] horarios = montaObjetoData(datas);
 
-                    ger.reservaSalaChamada(inputH[0], horarios[0], horarios[1]);
+                        ger.reservaSalaChamada(inputH[0], horarios[0], horarios[1]);
+                    } catch (Exception e) {
+                        System.out.println("Não foi possível fazer a reserva.Por favor, verifique os dados digitados");
+                    }
+
                 }
-                break;
+                    break;
 
                 case "5": {
                     System.out.println(
                             "Digite o nome da sala seguido do horário inicial e final da reserva, sendo que a sala é separada dos horários por uma vírgula e o horário inicial deve ser separado do final por um hífen (-). Exemplo: sala de jogos,27/08/2021 14:25-18:00");
                     String[] inputH = reader.readLine().split(",");
-                    String[] datas = inputH[1].split(" ");
-                    LocalDateTime[] horarios = montaObjetoData(datas);
 
-                    Reserva res = ger.buscaReserva(inputH[0], horarios[0], horarios[1]);
-                    ger.cancelaReserva(res);
+                    try {
+                        String[] datas = inputH[1].split(" ");
+                        LocalDateTime[] horarios = montaObjetoData(datas);
+
+                        Reserva res = ger.buscaReserva(inputH[0], horarios[0], horarios[1]);
+                        if (res == null) {
+                            System.out.println("Reserva inexistente");
+                            break;
+                        }
+
+                        ger.cancelaReserva(res);
+                    } catch (Exception e) {
+                        System.out
+                                .println("Não foi possível cancelar a reserva.Por favor verifique os dados digitados.");
+                    }
+
                 }
-                break;
+                    break;
 
                 case "6": {
                     System.out.println("Digite o nome da sala que você deseja visualizar as reservas");
                     String nomeSala = reader.readLine();
                     ger.imprimeReservasDaSala(nomeSala);
                 }
-                break;
+                    break;
 
                 case "7": {
                     encerrar = true;
-                    System.out.println("Obrigado por utilizar nossos serviços. Até mais!"); 
+                    System.out.println("Obrigado por utilizar nossos serviços. Até mais!");
                 }
-                break;
+                    break;
             }
 
             if (encerrar)

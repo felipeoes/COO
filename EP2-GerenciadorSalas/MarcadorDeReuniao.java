@@ -22,7 +22,7 @@ public class MarcadorDeReuniao {
                                                   // da
                                                   // reuniao
 
-    private DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y HH:mm");
+    private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y HH:mm");
 
     public MarcadorDeReuniao() {
         this.participantes = new HashSet<String>();
@@ -66,8 +66,9 @@ public class MarcadorDeReuniao {
 
         else {
             System.out.println(
-                    "Horário não foi incluído na lista de disponibilidade pois não respeita o período estipulado pelo responsável da reunião.\nData inicial:"
-                            + periodoInicial.format(formatador) + periodoFinal.format(formatador));
+                    "\nHorário não foi incluído na lista de disponibilidade pois não respeita o período estipulado pelo responsável da reunião.\nData inicial:"
+                            + periodoInicial.format(formatador).split(" ")[0] + "\nData final: "
+                            + periodoFinal.format(formatador).split(" ")[0]);
         }
     }
 
@@ -141,6 +142,11 @@ public class MarcadorDeReuniao {
         while (it.hasNext()) {
             String participante = it.next();
             List<HashMap<LocalDateTime, LocalDateTime>> temp = relDisponilidade.get(participante);
+            if (temp == null) {
+                System.out.println("Nenhum horário de disponibilidade válido foi indicado");
+                return;
+            }
+
             for (HashMap<LocalDateTime, LocalDateTime> horario : temp) {
                 LocalDateTime inicio = (LocalDateTime) horario.keySet().toArray()[0];
                 LocalDateTime fim = horario.get(inicio);

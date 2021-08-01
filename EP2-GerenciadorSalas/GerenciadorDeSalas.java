@@ -21,16 +21,23 @@ public class GerenciadorDeSalas {
     }
 
     public void adicionaSalaChamada(String nome, int capacidadeMaxima, String descricao) {
-        Sala sala = new Sala(nome, capacidadeMaxima, descricao);
+        Sala sala = buscaSala(nome);
+        if (sala != null) {
+            System.out.println("A sala não foi adicionada pois já existe");
+            return;
+        }
+
+        sala = new Sala(nome, capacidadeMaxima, descricao);
         adicionaSala(sala);
     }
 
     public void removeSalaChamada(String nomeDaSala) {
         if (nomeDaSala.length() > 0) {
             Sala sala = buscaSala(nomeDaSala);
-            if (sala != null)
+            if (sala != null) {
                 listaSalas.remove(sala);
-            else
+                System.out.println("Sala removida com sucesso!");
+            } else
                 System.out.println("Sala inexistente");
         } else {
             System.out.println("Nome da sala inválido");
@@ -42,6 +49,12 @@ public class GerenciadorDeSalas {
     }
 
     public void adicionaSala(Sala novaSala) {
+        Sala sala = buscaSala(novaSala.getNome());
+        if (sala != null) {
+            System.out.println("A sala não foi adicionada pois já existe");
+            return;
+        }
+
         this.listaSalas.add(novaSala);
         System.out.println("Sala adicionada com sucesso!");
     }
@@ -95,8 +108,17 @@ public class GerenciadorDeSalas {
 
         if (salaCancelada != null) {
             ArrayList<Reserva> reservasSala = salaCancelada.getReservas();
+            if (reservasSala == null || reservasSala.isEmpty()) {
+                System.out.println("Não há reservas para essa sala");
+                return;
+            }
+
             reservasSala.remove(cancelada);
+            salaCancelada.setReservas(reservasSala);
             this.listaReservas.remove(cancelada);
+            System.out.println("Reserva cancelada com sucesso!");
+        } else {
+            System.out.println("Sala inexistente");
         }
     }
 
@@ -112,10 +134,11 @@ public class GerenciadorDeSalas {
 
     public void imprimeReservasDaSala(String nomeSala) {
         Collection<Reserva> reservas = reservasParaSala(nomeSala);
-        if (reservas == null)
+        if (reservas == null || reservas.isEmpty()) {
             System.out.println("Não há reservas para essa sala");
+            return;
+        }
 
-        System.out.println("NOME DA SALA + \tINICIO + \tFIM");
         for (Reserva res : reservas) {
             System.out.println(res.toString());
         }
