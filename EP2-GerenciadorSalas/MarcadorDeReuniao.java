@@ -66,7 +66,7 @@ public class MarcadorDeReuniao {
 
         else {
             System.out.println(
-                    "\nHorário não foi incluído na lista de disponibilidade pois não respeita o período estipulado pelo responsável da reunião.\nData inicial:"
+                    "\nHorario nao foi incluido na lista de disponibilidade pois nao respeita o periodo estipulado pelo responsavel da reuniao.\nData inicial:"
                             + periodoInicial.format(formatador).split(" ")[0] + "\nData final: "
                             + periodoFinal.format(formatador).split(" ")[0]);
         }
@@ -115,7 +115,7 @@ public class MarcadorDeReuniao {
                     int diaIni = inicio.getDayOfMonth();
 
                     if (diaIni == hIni.getDayOfMonth()
-                            && (inicio.isBefore(hIni) || fim.isBefore(hFim) || inicio.isEqual(hFim))) {
+                            && (hIni.isBefore(inicio) || fim.isBefore(hFim) || inicio.isEqual(hFim))) {
                         matchHorario = false;
                         break;
                     }
@@ -124,7 +124,7 @@ public class MarcadorDeReuniao {
 
             if (matchHorario) {
                 String fimFormatado = hFim.format(formatador).substring(11);
-                System.out.println("\nA reunião pode ser marcada no seguinte período: " + hIni.format(formatador) + "-"
+                System.out.println("\nA reuniao pode ser marcada no seguinte periodo: " + hIni.format(formatador) + "-"
                         + fimFormatado);
 
                 existeHorario = true;
@@ -143,7 +143,7 @@ public class MarcadorDeReuniao {
             String participante = it.next();
             List<HashMap<LocalDateTime, LocalDateTime>> temp = relDisponilidade.get(participante);
             if (temp == null) {
-                System.out.println("Nenhum horário de disponibilidade válido foi indicado");
+                System.out.println("Nenhum horario de disponibilidade valido foi indicado");
                 return;
             }
 
@@ -163,6 +163,6 @@ public class MarcadorDeReuniao {
         }
 
         if (!calculaSobreposicao())
-            System.out.println("\nNão há horários que satisfaçam todos os participantes");
+            System.out.println("\nNão ha horarios que satisfacam todos os participantes");
     }
 }

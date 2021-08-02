@@ -23,7 +23,7 @@ public class GerenciadorDeSalas {
     public void adicionaSalaChamada(String nome, int capacidadeMaxima, String descricao) {
         Sala sala = buscaSala(nome);
         if (sala != null) {
-            System.out.println("A sala não foi adicionada pois já existe");
+            System.out.println("A sala nao foi adicionada pois ja existe");
             return;
         }
 
@@ -40,7 +40,7 @@ public class GerenciadorDeSalas {
             } else
                 System.out.println("Sala inexistente");
         } else {
-            System.out.println("Nome da sala inválido");
+            System.out.println("Nome da sala invalido");
         }
     }
 
@@ -51,7 +51,7 @@ public class GerenciadorDeSalas {
     public void adicionaSala(Sala novaSala) {
         Sala sala = buscaSala(novaSala.getNome());
         if (sala != null) {
-            System.out.println("A sala não foi adicionada pois já existe");
+            System.out.println("A sala nao foi adicionada pois ja existe");
             return;
         }
 
@@ -95,7 +95,7 @@ public class GerenciadorDeSalas {
             if (inexistente) {
                 System.out.println("Sala inexistente!\n" + f.getMessage());
             } else if (jahReservada) {
-                System.out.println("A sala informada já foi reservada!\n" + f.getMessage());
+                System.out.println("A sala informada ja foi reservada!\n" + f.getMessage());
             } else {
                 System.out.println(sucesso);
             }
@@ -109,7 +109,7 @@ public class GerenciadorDeSalas {
         if (salaCancelada != null) {
             ArrayList<Reserva> reservasSala = salaCancelada.getReservas();
             if (reservasSala == null || reservasSala.isEmpty()) {
-                System.out.println("Não há reservas para essa sala");
+                System.out.println("Nao há reservas para essa sala");
                 return;
             }
 
@@ -135,7 +135,7 @@ public class GerenciadorDeSalas {
     public void imprimeReservasDaSala(String nomeSala) {
         Collection<Reserva> reservas = reservasParaSala(nomeSala);
         if (reservas == null || reservas.isEmpty()) {
-            System.out.println("Não há reservas para essa sala");
+            System.out.println("Nao ha reservas para essa sala");
             return;
         }
 

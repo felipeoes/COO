@@ -46,18 +46,21 @@ public class Main {
         final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/y");
         List<String> participantes = new ArrayList<String>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        LocalDate dataInicial;
-        LocalDate dataFinal;
+        LocalDate dataInicial = LocalDate.of(1, 1, 1);
+        LocalDate dataFinal = LocalDate.of(1, 1, 1);
 
         System.out.println(
-                "Olá! Digite o período em que deseja marcar a reunião. Por exemplo, a entrada para um período entre 10 e 24 de abril de 2021 deve ser 10,24,8,2021");
-        while (true) {
+                "Ola! Digite o periodo em que deseja marcar a reuniao. Por exemplo, a entrada para um periodo entre 10 e 24 de abril de 2021 deve ser 10,24,8,2021");
+        String[] periodo = reader.readLine().split(",");
+        if (periodo[0].toLowerCase().equals("x"))
+            return;
+
+        while (!periodo[0].toLowerCase().equals("x")) {
             try {
-                String[] entrada = reader.readLine().split(",");
-                int diaInicial = Integer.parseInt(entrada[0]);
-                int diaFinal = Integer.parseInt(entrada[1]);
-                int mes = Integer.parseInt(entrada[2]);
-                int ano = Integer.parseInt(entrada[3]);
+                int diaInicial = Integer.parseInt(periodo[0]);
+                int diaFinal = Integer.parseInt(periodo[1]);
+                int mes = Integer.parseInt(periodo[2]);
+                int ano = Integer.parseInt(periodo[3]);
 
                 dataInicial = LocalDate.of(ano, mes, diaInicial); // periodo
                 dataFinal = LocalDate.of(ano, mes, diaFinal);
@@ -65,21 +68,25 @@ public class Main {
                 break;
             } catch (Exception e) {
                 System.out.println(
-                        "Por favor, digite uma data válida. Exemplo: 5,10,11,2021 \nSendo que 5 representa o dia inicial do período, 10 representa o dia final, 11 é o mês novembro e 2021 é o ano");
+                        "Por favor, digite uma data válida. Exemplo: 5,10,11,2021 \nSendo que 5 representa o dia inicial do periodo, 10 representa o dia final, 11 eh o mês novembro e 2021 eh o ano \nPara sair, digite \"x\"");
+                periodo = reader.readLine().split(",");
             }
+
+            if (periodo[0].toLowerCase().equals("x"))
+                return;
         }
 
         System.out.println(
-                "Agora digite os emails de todos os participantes da reunião, um por vez seguido de um \"Enter\" \nQuando finalizar, digite \"X\" e aperte \"Enter\"");
+                "Agora digite os emails de todos os participantes da reuniao, um por vez seguido de um \"Enter\" \nQuando finalizar, digite \"X\" e aperte \"Enter\"");
 
         String entrada = reader.readLine();
         while (!entrada.toLowerCase().equals("x")) {
             if (!validaEmail(entrada)) {
                 System.out.println(
-                        "Email informado não foi incluído na lista de participantes. Digite um email válido. Exemplo: fulano@gmail.com");
+                        "Email informado nao foi incluido na lista de participantes. Digite um email valido. Exemplo: fulano@gmail.com");
             } else if (participantes.contains(entrada)) {
                 System.out.println(
-                        "Email informado já está incluído na lista de participantes. Digite outro email ou \"X\" se já tiver incluído todos.");
+                        "Email informado ja esta incluido na lista de participantes. Digite outro email ou \"X\" se ja tiver incluido todos.");
             } else {
                 participantes.add(entrada);
             }
@@ -94,14 +101,14 @@ public class Main {
 
         for (String participante : participantes) {
             System.out.println(participante
-                    + " Por favor, indique seus horários inicial e final de disponibilidade para a reunião, respeitando o período estipulado. Sendo que o inicial deve ser separado do final por um hífen (-). Ex: 27/08/2021 14:25-18:00");
+                    + " Por favor, indique seus horários inicial e final de disponibilidade para a reuniao, respeitando o periodo estipulado. Sendo que o inicial deve ser separado do final por um hifen (-). Ex: 27/08/2021 14:25-18:00");
             System.out.println("Data inicial: " + formatador.format(dataInicial) + "\nData final: "
                     + formatador.format(dataFinal));
 
             String[] input = reader.readLine().split(" ");
             while (input[0].toLowerCase().equals("x")) { // caso em que o usuário já digitou X antes mesmo de indicar
                                                          // pelo menos um horário de disponibilidade.
-                System.out.println("Indique ao menos um horário de disponibilidade");
+                System.out.println("Indique ao menos um horario de disponibilidade");
                 input = reader.readLine().split(" ");
             }
 
@@ -142,11 +149,11 @@ public class Main {
     public static void gerenciadorDeSalas() throws IOException, GerenciadorDeSalas.FalhaNaReservaException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        System.out.println("Gostaria de utilizar o gerenciador de salas? Digite \"S\" para sim ou \"N\" para não");
+        System.out.println("Gostaria de utilizar o gerenciador de salas? Digite \"S\" para sim ou \"N\" para nao");
         String input = reader.readLine().toLowerCase();
 
         while (!(input.equals("n") || input.equals("s"))) {
-            System.out.println("Por favor, digite uma opção válida. \"S\" para sim ou \"N\" para não");
+            System.out.println("Por favor, digite uma opcao valida. \"S\" para sim ou \"N\" para nao");
             input = reader.readLine();
         }
         if (input.equals("n"))
@@ -155,10 +162,10 @@ public class Main {
         GerenciadorDeSalas ger = new GerenciadorDeSalas();
         boolean encerrar = false;
         System.out.println(
-                "Digite o número da opção que deseja: \n1 - Adicionar uma sala \n2 - Remover uma sala \n3 - Visualizar a lista de salas \n4 - Reservar uma sala\n5 - Cancelar uma reserva\n6 - Visualizar a lista de reservas de uma sala\n7 - Sair");
+                "Digite o numero da opcao que deseja: \n1 - Adicionar uma sala \n2 - Remover uma sala \n3 - Visualizar a lista de salas \n4 - Reservar uma sala\n5 - Cancelar uma reserva\n6 - Visualizar a lista de reservas de uma sala\n7 - Sair");
         input = reader.readLine();
         while (!validaNumero(input)) {
-            System.out.println("Digite um número válido. Lembrando que as opções variam de 1 a 7.");
+            System.out.println("Digite um numero valido. Lembrando que as opcoes variam de 1 a 7.");
             input = reader.readLine();
         }
 
@@ -166,7 +173,7 @@ public class Main {
             switch (input) {
                 case "1": {
                     System.out.println(
-                            "Digite cada um dos seguintes campos seguidos de vírgula: nome da sala, local, observações, capacidade máxima. Exemplo: sala de jogos,EACH-USP,somente alunos da EACH-USP,45");
+                            "Digite cada um dos seguintes campos seguidos de virgula: nome da sala, local, observacoes, capacidade maxima. Exemplo: sala de jogos,EACH-USP,somente alunos da EACH-USP,45");
                     String[] dadosSala = reader.readLine().split(",");
 
                     while (true) {
@@ -177,7 +184,7 @@ public class Main {
                             break;
                         } catch (Exception e) {
                             System.out.println(
-                                    "Falha na criação da sala. Verifique se os dados digitados estão de acordo com o solicitado e tente novamente");
+                                    "Falha na criacao da sala. Verifique se os dados digitados estao de acordo com o solicitado e tente novamente");
                             dadosSala = reader.readLine().split(",");
                         }
                     }
@@ -195,7 +202,7 @@ public class Main {
                 case "3": {
                     List<Sala> listaSalas = ger.listaDeSalas();
                     if (listaSalas.isEmpty())
-                        System.out.println("Não há nenhuma sala neste gerenciador de salas");
+                        System.out.println("Nao ha nenhuma sala neste gerenciador de salas");
 
                     for (Sala sala : ger.listaDeSalas()) {
                         System.out.println(sala.toString());
@@ -205,7 +212,7 @@ public class Main {
 
                 case "4": {
                     System.out.println(
-                            "Digite o nome da sala seguido do horário inicial e final da reserva, sendo que a sala é separada dos horários por uma vírgula e o horário inicial deve ser separado do final por um hífen (-). Exemplo: sala de jogos,27/08/2021 14:25-18:00");
+                            "Digite o nome da sala seguido do horario inicial e final da reserva, sendo que a sala eh separada dos horários por uma virgula e o horario inicial deve ser separado do final por um hifen (-). Exemplo: sala de jogos,27/08/2021 14:25-18:00");
                     String[] inputH = reader.readLine().split(",");
                     try {
                         String[] datas = inputH[1].split(" ");
@@ -213,7 +220,7 @@ public class Main {
 
                         ger.reservaSalaChamada(inputH[0], horarios[0], horarios[1]);
                     } catch (Exception e) {
-                        System.out.println("Não foi possível fazer a reserva.Por favor, verifique os dados digitados");
+                        System.out.println("Nao foi possivel fazer a reserva.Por favor, verifique os dados digitados");
                     }
 
                 }
@@ -221,7 +228,7 @@ public class Main {
 
                 case "5": {
                     System.out.println(
-                            "Digite o nome da sala seguido do horário inicial e final da reserva, sendo que a sala é separada dos horários por uma vírgula e o horário inicial deve ser separado do final por um hífen (-). Exemplo: sala de jogos,27/08/2021 14:25-18:00");
+                            "Digite o nome da sala seguido do horario inicial e final da reserva, sendo que a sala eh separada dos horarios por uma virgula e o horario inicial deve ser separado do final por um hifen (-). Exemplo: sala de jogos,27/08/2021 14:25-18:00");
                     String[] inputH = reader.readLine().split(",");
 
                     try {
@@ -237,7 +244,7 @@ public class Main {
                         ger.cancelaReserva(res);
                     } catch (Exception e) {
                         System.out
-                                .println("Não foi possível cancelar a reserva.Por favor verifique os dados digitados.");
+                                .println("Nao foi possivel cancelar a reserva.Por favor verifique os dados digitados.");
                     }
 
                 }
@@ -252,28 +259,31 @@ public class Main {
 
                 case "7": {
                     encerrar = true;
-                    System.out.println("Obrigado por utilizar nossos serviços. Até mais!");
+                    System.out.println("Obrigado por utilizar nossos servicos. Ate mais!");
                 }
                     break;
             }
 
             if (encerrar)
                 break;
-            System.out.println("\nDeseja continuar utilizando o gerenciador? Digite \"S\" para sim ou \"N\" para não");
+            System.out.println("\nDeseja continuar utilizando o gerenciador? Digite \"S\" para sim ou \"N\" para nao");
             input = reader.readLine();
             while (!(input.equals("n") || input.equals("s"))) {
-                System.out.println("Por favor, digite uma opção válida. \"S\" para sim ou \"N\" para não");
+                System.out.println("Por favor, digite uma opcao valida. \"S\" para sim ou \"N\" para nao");
                 input = reader.readLine();
             }
-            if (input.equals("n"))
+            if (input.equals("n")) {
+                System.out.println("Obrigado por utilizar nossos servicos. Ate mais!");
                 return;
+            }
+
             else {
                 System.out.println(
-                        "Digite o número da opção que deseja: \n1 - Adicionar uma sala \n2 - Remover uma sala \n3 - Visualizar a lista de salas \n4 - Reservar uma sala\n5 - Cancelar uma reserva\n6 - Visualizar a lista de reservas de uma sala\n7 - Sair");
+                        "Digite o numero da opcao que deseja: \n1 - Adicionar uma sala \n2 - Remover uma sala \n3 - Visualizar a lista de salas \n4 - Reservar uma sala\n5 - Cancelar uma reserva\n6 - Visualizar a lista de reservas de uma sala\n7 - Sair");
                 input = reader.readLine();
 
                 while (!validaNumero(input)) {
-                    System.out.println("Digite um número válido. Lembrando que as opções variam de 1 a 7.");
+                    System.out.println("Digite um numero valido. Lembrando que as opcoes variam de 1 a 7.");
                     input = reader.readLine();
                 }
             }
